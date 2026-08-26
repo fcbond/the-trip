@@ -62,7 +62,6 @@ LOCATION_ALIASES = {
         "Hierapolis": ["pamukkale"],
         "Hoşap Castle": ["van"],
         "Alanya": ["alanya"],
-        "Anamur / Narlikuyu": ["anamur", "narlıkuyu"],
         "Aspendos": ["aspendos"],
         "Bursa": ["bursa"],
         "Goreme": ["göreme"],
