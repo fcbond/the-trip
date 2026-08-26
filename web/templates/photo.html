@@ -32,9 +32,31 @@
     {% if stop %}<a href="{{ root }}index.html?stop={{ stop.slug }}#map">View on the map &rarr;</a>{% endif %}
   </nav>
 
+  <nav class="photo-pager" data-photo-pager
+       {% if prev_photo %}data-prev="{{ root }}photo/{{ prev_photo.id }}.html"{% endif %}
+       {% if next_photo %}data-next="{{ root }}photo/{{ next_photo.id }}.html"{% endif %}>
+    {% if prev_photo %}
+    <a class="pager-prev" href="{{ root }}photo/{{ prev_photo.id }}.html" rel="prev">
+      <img src="{{ root }}photos/{{ prev_photo.image_leg }}/thumb/{{ prev_photo.id }}.jpg" alt="" loading="lazy">
+      <span>&larr; {{ prev_photo.id }}</span>
+    </a>
+    {% else %}<span></span>{% endif %}
+    <span class="pager-count">{{ photo_pos }} of {{ photo_total }}</span>
+    {% if next_photo %}
+    <a class="pager-next" href="{{ root }}photo/{{ next_photo.id }}.html" rel="next">
+      <span>{{ next_photo.id }} &rarr;</span>
+      <img src="{{ root }}photos/{{ next_photo.image_leg }}/thumb/{{ next_photo.id }}.jpg" alt="" loading="lazy">
+    </a>
+    {% else %}<span></span>{% endif %}
+  </nav>
+
   <p class="photo-page-credit">
     Photo &copy; 1976 Monique Bond &middot;
     <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>
   </p>
 </article>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ root }}{{ asset('js/photo-pager.js') }}"></script>
 {% endblock %}

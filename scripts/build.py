@@ -635,7 +635,12 @@ def main():
     # Photo pages - one per id, so a caption's cross-reference to another
     # photo (see linkify_photo_refs) and a "photo/<id>.html" URL both have
     # somewhere to land.
-    for p in photos:
+    # One walk through the whole trip, in the order it happened, so a
+    # reader can go slide by slide from London to Bangkok. Date first, then
+    # id, because a roll can straddle a border (16.32-16.38 are India
+    # content on a Pakistan roll) and the date is what puts them right.
+    ordered = sorted(photos, key=lambda p: (p["date"], p["id"]))
+    for i, p in enumerate(ordered):
         stop = stops_by_slug.get(photo_stop_slug.get(p["id"]))
         render(
             "photo.html",
@@ -644,6 +649,10 @@ def main():
             photo=p,
             stop=stop,
             has_day=p["date"] in day_dates,
+            prev_photo=ordered[i - 1] if i > 0 else None,
+            next_photo=ordered[i + 1] if i < len(ordered) - 1 else None,
+            photo_pos=i + 1,
+            photo_total=len(ordered),
         )
 
     print(f"built {len(days)} diary days, {len(stops)} stops, {len(tag_list)} tags, {len(photos)} photo pages into {DOCS}")
