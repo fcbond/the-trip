@@ -1,5 +1,11 @@
 # The Trip — 1976
 
+> **Edit this in [the-trip-archive](https://github.com/fcbond/the-trip-archive), not here.**
+> This repository is a deploy target: `docs/`, `metadata/`, `web/` and
+> `scripts/` are copied in by `scripts/deploy.py` from the private archive
+> repo, which also holds the original scans the site is built from. Changes
+> made directly here will be overwritten by the next deploy.
+
 A family's overland journey from London to Bombay by van in 1976, rebuilt
 from their slides, diaries and letters as a browsable site: a map of every
 stop, the diary day by day, and 903 photographs.
@@ -437,6 +443,28 @@ the full-res link there gains almost nothing. Only the 713 JPEG-sourced
 photos get a real step up, and it's 1.6x the pixels. If those slides still
 exist physically, rescanning is the only thing that would make a full-res
 link meaningful for those three legs.
+
+### Which repo to work in
+
+**Work here, in the archive repo.** It has the photo masters, so it is the
+only place a photo can be reprocessed, and it holds the full history. The
+public repo is a deploy target: everything in it is copied there by
+`scripts/deploy.py`, and edits made directly in it are overwritten by the
+next deploy. Its README says so at the top - the banner is injected during
+the copy, so it cannot be lost to a sync.
+
+```bash
+uv run python scripts/build.py
+STATICRYPT_PASSWORD=... uv run python scripts/apply_password.py
+uv run python scripts/deploy.py --dry-run              # see what would change
+uv run python scripts/deploy.py -m "fix a caption"     # sync, commit, push
+```
+
+`deploy.py` refuses to run if `docs/` is older than anything in `metadata/`
+or `web/`, so a forgotten rebuild cannot publish the previous version, and
+it aborts if any archive-only path (`data/`, `INITIAL.md`, the one-time
+scripts) has appeared on the public side. `--public` or `$TRIP_PUBLIC`
+points it at the checkout; `--no-push` stops after committing.
 
 ### Doing the split
 
