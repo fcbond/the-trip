@@ -1,0 +1,43 @@
+{% macro slide_mount(photo, root) %}
+<figure class="slide" data-lightbox
+        data-full="{{ root }}photos/{{ photo.image_leg }}/display/{{ photo.id }}.jpg"
+        data-caption="{{ photo.description }}{% if photo.place %}, {{ photo.place }}{% endif %}"
+        data-id="{{ photo.id }}"
+        tabindex="0" role="button"
+        aria-label="View full size: {{ photo.description }}">
+  <span class="slide-window">
+    <img src="{{ root }}photos/{{ photo.image_leg }}/thumb/{{ photo.id }}.jpg" loading="lazy" alt="{{ photo.description }}">
+  </span>
+  <figcaption>
+    <a class="slide-id" href="{{ root }}photo/{{ photo.id }}.html">{{ photo.id }}</a>
+    <span class="slide-desc">{{ photo.description_html }}</span>
+  </figcaption>
+</figure>
+{% endmacro %}
+
+{% macro diary_entry(entry) %}
+<div class="entry entry--{{ entry.speaker | replace('/', '-') }}">
+  <span class="entry-speaker">{{ entry.speaker }}</span>
+  <p class="entry-text">{{ entry.text }}</p>
+</div>
+{% endmacro %}
+
+{% macro drawing(pix, root) %}
+<figure class="drawing drawing--{{ pix.person }}" data-lightbox
+        data-full="{{ root }}photos/diary_pix/display/{{ pix.id }}.jpg"
+        data-caption="{{ pix.title }}"
+        data-id="{{ pix.id }}"
+        tabindex="0" role="button"
+        aria-label="View full size: {{ pix.title }}">
+  <span class="drawing-window">
+    <img src="{{ root }}photos/diary_pix/thumb/{{ pix.id }}.jpg" loading="lazy" alt="{{ pix.title }}">
+  </span>
+  {% if pix.title %}<figcaption>{{ pix.title }}</figcaption>{% endif %}
+</figure>
+{% endmacro %}
+
+{% macro drawings_row(pix_list, root) %}
+<div class="drawings-row">
+  {% for pix in pix_list %}{{ drawing(pix, root) }}{% endfor %}
+</div>
+{% endmacro %}

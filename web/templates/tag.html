@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}#{{ tag_name }} · The Trip{% endblock %}
+{% block content %}
+<article class="tag-page">
+  <header class="tag-page-head">
+    <p class="tag-page-eyebrow">A recurring theme</p>
+    <h1 class="tag-page-name">{{ tag_label }}</h1>
+    <p class="tag-page-count">{{ occurrences|length }} mention{{ 's' if occurrences|length != 1 }} in the diaries</p>
+  </header>
+  <div class="tag-occurrences">
+    {% for occ in occurrences %}
+    <a class="tag-occurrence" href="{{ root }}diary/{{ occ.date }}.html">
+      <span class="entry-speaker">{{ occ.speaker }}</span>
+      <span class="tag-occurrence-date">{{ occ.date }}</span>
+      <p class="entry-text">{{ occ.excerpt }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</article>
+{% endblock %}

@@ -1,0 +1,647 @@
+/* ============================================================
+   Tokens — "slide night": a dim, warm room; bright paper pages;
+   photographs lit like projected Kodachrome slides.
+   ============================================================ */
+:root {
+  --ink: #17130f;
+  --room: #241d17;
+  --room-line: #3a2f24;
+  --paper: #efe3c8;
+  --paper-dim: #e3d5b0;
+  --ink-on-paper: #2a2018;
+  --ink-soft: #b9ac97;
+  --ink-faint: #7d7160;
+  --kodachrome: #c1432a;
+  --amber: #e0a940;
+  --teal: #4f8a84;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Lora", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.room {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ---------------- Header ---------------- */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.75rem 0 1.25rem;
+  border-bottom: 1px solid var(--room-line);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.brand-mark { color: var(--amber); font-size: 1rem; }
+
+.brand-text {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--paper);
+  letter-spacing: 0.01em;
+}
+
+.brand-year {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ink-faint);
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+
+.site-nav { display: flex; gap: 1.5rem; }
+.site-nav a {
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.site-nav a:hover { color: var(--amber); border-color: var(--amber); }
+
+/* ---------------- Footer ---------------- */
+.site-footer {
+  margin-top: 4rem;
+  padding: 1.5rem 0 3rem;
+  border-top: 1px solid var(--room-line);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+/* ---------------- Hero ---------------- */
+.hero { padding: 3rem 0 2.5rem; max-width: 46rem; }
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--kodachrome);
+  margin: 0 0 0.75rem;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  color: var(--paper);
+  margin: 0 0 1rem;
+  line-height: 0.95;
+}
+.hero-sub { font-size: 1.05rem; color: var(--ink-soft); margin: 0 0 0.75rem; }
+.hero-sub strong { color: var(--paper); font-weight: 600; }
+.hero-note { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-faint); }
+.hero-note strong { color: var(--amber); }
+
+/* ---------------- Map ---------------- */
+.map-section { margin: 2rem 0 3rem; }
+.map-toolbar { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+.map-layer-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--room);
+  border: 1px solid var(--room-line);
+  color: var(--ink-soft);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.map-layer-btn:hover { border-color: var(--amber); color: var(--paper); }
+.map-layer-btn.is-active {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  font-weight: 500;
+}
+.map {
+  height: 60vh;
+  min-height: 420px;
+  border: 1px solid var(--room-line);
+  border-radius: 3px;
+  background: var(--room);
+}
+
+/* Adventure ("Old Chart") tile treatment: real tiles, aged via filter */
+.map.layer-adventure .leaflet-tile-pane {
+  filter: sepia(0.75) saturate(1.7) hue-rotate(-8deg) contrast(1.15) brightness(0.92);
+}
+.map.layer-adventure { position: relative; }
+.map.layer-adventure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+  box-shadow: inset 0 0 120px 40px rgba(23, 19, 15, 0.55);
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(23,19,15,0.35) 100%);
+}
+
+.compass-rose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 72px;
+  height: 72px;
+  opacity: 1;
+  z-index: 500;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+}
+
+.route-marker {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--kodachrome);
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.leaflet-popup-content-wrapper {
+  background: var(--paper);
+  color: var(--ink-on-paper);
+  border-radius: 2px;
+  font-family: var(--font-body);
+}
+.leaflet-popup-tip { background: var(--paper); }
+
+/* Stop markers: a cross in pen on the map, not a UI pin. Halo strokes sit
+   under the ink so the mark reads on both the pale street tiles and the
+   dark terrain ones. --tilt/--flip are set per marker in map.js. */
+.stop-mark { background: none; border: 0; }
+.stop-mark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  transform: rotate(var(--tilt, 0deg)) scaleX(var(--flip, 1));
+  transition: transform 140ms ease;
+}
+.stop-mark path { fill: none; stroke-linecap: round; }
+.stop-mark .mark-halo path { stroke: var(--paper); stroke-width: 6; opacity: 0.9; }
+.stop-mark .mark-ink path { stroke: var(--kodachrome); stroke-width: 2.8; }
+.stop-mark:hover svg,
+.stop-mark:focus-visible svg {
+  transform: rotate(var(--tilt, 0deg)) scaleX(var(--flip, 1)) scale(1.28);
+}
+.stop-mark:hover .mark-ink path { stroke: var(--ink); }
+.stop-mark:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 2px; }
+.stop-mark--focus .mark-ink path { stroke-width: 3.1; }
+@media (prefers-reduced-motion: reduce) {
+  .stop-mark svg { transition: none; }
+}
+.map-popup-name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; display: block; }
+.map-popup-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); display: block; margin: 2px 0 6px; }
+.map-popup-link { font-family: var(--font-mono); font-size: 0.72rem; color: var(--kodachrome); text-decoration: none; }
+
+/* ---------------- Stops strip ---------------- */
+.section-heading {
+  font-family: var(--font-display);
+  color: var(--paper);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+}
+.section-heading--small { font-size: 1.05rem; }
+
+.strip-scroll-wrap {
+  position: relative;
+}
+.strip-scroll-wrap::before,
+.strip-scroll-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0.75rem;
+  width: 2.5rem;
+  pointer-events: none;
+  z-index: 2;
+}
+.strip-scroll-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--ink), transparent);
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+.strip-scroll-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--ink), transparent);
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+.strip-scroll-wrap.is-start::before { opacity: 0; }
+.strip-scroll-wrap.is-end::after { opacity: 0; }
+.strip-scroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  scroll-snap-type: x proximity;
+}
+.strip-scroll .stop-card { scroll-snap-align: start; }
+.stop-card {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: var(--room);
+  border: 1px solid var(--room-line);
+  border-radius: 3px;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  min-width: 8rem;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.stop-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+.stop-card-date { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-faint); }
+.stop-card-name { font-family: var(--font-display); font-weight: 600; color: var(--paper); font-size: 1.05rem; }
+
+/* ---------------- Diary / Stop pages (paper cards) ---------------- */
+.diary-page, .stop-page, .tag-page, .index-page {
+  background: var(--paper);
+  color: var(--ink-on-paper);
+  border-radius: 3px;
+  padding: 2rem clamp(1.25rem, 4vw, 3rem);
+  margin: 2rem 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+
+.diary-page-date, .stop-page-dates, .tag-page-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--kodachrome);
+  margin: 0 0 0.4rem;
+}
+.diary-page-place, .stop-page-name, .tag-page-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin: 0 0 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.diary-page-stop-link, .stop-page-links a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: var(--kodachrome);
+  border-bottom: 1px dotted var(--kodachrome);
+}
+.stop-page-links { display: flex; gap: 1.25rem; margin-bottom: 1.5rem; }
+
+.diary-entries { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
+.entry { display: flex; gap: 0.9rem; align-items: baseline; }
+.entry-speaker {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 0.15rem 0.45rem;
+  border-radius: 2px;
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+.entry--G-M .entry-speaker { background: var(--teal); }
+.entry--D .entry-speaker { background: var(--kodachrome); }
+.entry--F .entry-speaker { background: #8a6b2f; }
+.entry--H .entry-speaker { background: #5c6b8a; }
+.entry-text { margin: 0; font-size: 1.02rem; }
+
+/* Kids' own drawings/diary pages - kept plain so the drawing itself is the
+   focus, tied to the speaker above it by a thin accent border. */
+.drawings-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: -0.3rem 0 0.3rem 2.2rem;
+}
+.drawing {
+  border-top: 3px solid var(--paper-dim);
+  padding-top: 0.5rem;
+  max-width: 440px;
+  cursor: pointer;
+}
+.drawing--D { border-top-color: var(--kodachrome); }
+.drawing--F { border-top-color: #8a6b2f; }
+.drawing--H { border-top-color: #5c6b8a; }
+.drawing-window { display: block; }
+.drawing-window img { width: 100%; display: block; }
+.drawing figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  margin-top: 0.5rem;
+}
+
+.stop-narrative {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
+  border-left: 3px solid var(--kodachrome);
+  padding-left: 1rem;
+  margin: 0 0 1rem;
+  color: var(--ink-on-paper);
+}
+.stop-mileage {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  margin: 0 0 2rem;
+}
+.stop-landmark-name {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin: 1.5rem 0 0.75rem;
+}
+.stop-landmark-name a {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-decoration: none;
+  color: var(--kodachrome);
+  border-bottom: 1px dotted var(--kodachrome);
+}
+.stop-diary-day { margin-bottom: 1.75rem; }
+.stop-diary-day-link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--kodachrome);
+  margin-bottom: 0.6rem;
+}
+
+/* ---------------- Slide mounts ---------------- */
+.slide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.1rem;
+  margin-bottom: 1rem;
+}
+.slide {
+  background: #d8cdb4;
+  border: 1px solid #b9ab8a;
+  border-radius: 2px;
+  padding: 8px 8px 6px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.slide:hover, .slide:focus-visible { transform: translateY(-3px) rotate(-0.4deg); box-shadow: 0 10px 20px rgba(0,0,0,0.25); }
+.slide-window {
+  display: block;
+  background: var(--ink);
+  padding: 3px;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.slide-window img { aspect-ratio: 3/2; object-fit: cover; width: 100%; }
+.slide figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.4rem;
+  font-family: var(--font-mono);
+}
+.slide-id { font-size: 0.65rem; color: var(--kodachrome); font-weight: 500; text-decoration: none; }
+.slide-id:hover { text-decoration: underline; }
+.slide-desc {
+  font-size: 0.65rem;
+  color: #5c5140;
+  text-align: left;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.slide-desc a, .photo-page-desc a {
+  color: var(--kodachrome);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+/* ---------------- Photo page ---------------- */
+.photo-page-id { color: var(--kodachrome); }
+.photo-page-frame {
+  background: #d8cdb4;
+  border: 1px solid #b9ab8a;
+  border-radius: 2px;
+  padding: 10px 10px 8px;
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+}
+.photo-page-window {
+  display: block;
+  background: var(--ink);
+  padding: 4px;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.photo-page-window img { width: 100%; display: block; }
+.photo-page-desc { font-size: 1.02rem; margin-bottom: 1.5rem; }
+.photo-page-fullres {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.photo-page-fullres a {
+  color: #6f6046;
+  text-decoration: none;
+  border-bottom: 1px dotted #a99a79;
+}
+.photo-page-fullres a:hover { color: var(--kodachrome); border-bottom-color: var(--kodachrome); }
+.photo-page-credit {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--paper-dim);
+  padding-top: 1rem;
+}
+.photo-page-credit a { color: var(--ink-faint); text-decoration: underline; text-decoration-style: dotted; }
+.photo-page-credit a:hover { color: var(--kodachrome); }
+
+/* ---------------- Pager ---------------- */
+.diary-pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--paper-dim);
+  padding-top: 1.25rem;
+}
+.diary-pager a { text-decoration: none; color: var(--kodachrome); }
+.pager-index { color: var(--ink-faint); }
+.pager-index-group { display: flex; gap: 1rem; }
+.pager-index-group .pager-index:hover { color: var(--kodachrome); }
+
+/* ---------------- Index / tag lists ---------------- */
+.index-page-head p { color: var(--ink-faint); }
+
+.diary-month { margin-bottom: 2rem; }
+.diary-month-heading {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--paper-dim);
+  padding-bottom: 0.4rem;
+  margin: 0 0 0.5rem;
+}
+
+.diary-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.diary-list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  text-decoration: none;
+  padding: 0.6rem 0.75rem;
+  margin: 1px 0;
+  border-left: 4px solid transparent;
+  background: transparent;
+  transition: transform 0.1s;
+}
+.diary-list-item:hover { transform: translateX(2px); }
+.diary-list-datewrap { display: flex; gap: 1rem; align-items: baseline; flex-wrap: wrap; }
+.diary-list-date { font-family: var(--font-mono); font-size: 0.8rem; color: var(--kodachrome); flex: 0 0 auto; }
+.diary-list-place { font-family: var(--font-display); font-weight: 500; color: var(--ink-on-paper); text-align: left; }
+.diary-list-miles { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); flex: 0 0 auto; white-space: nowrap; }
+
+/* One tint per leg, so the index reads as a strip-map of the trip at a
+   glance. Extend this list as new legs are added. */
+.diary-list-item--turkey { background: #f0dcd3; border-left-color: #b5674a; }
+.diary-list-item--iran { background: #dce8e2; border-left-color: #4f7d6c; }
+.diary-list-item--afghanistan { background: #ece0bd; border-left-color: #a1822f; }
+.diary-list-item--pakistan { background: #dbe6d4; border-left-color: #5c7a4a; }
+.diary-list-item--india { background: #f5ddb0; border-left-color: #c17d1f; }
+.diary-list-item--bangkok { background: #e3ddf0; border-left-color: #6b5a9e; }
+.diary-list-item--uk_greece { background: #d6e3ea; border-left-color: #3f6b85; }
+
+.tag-cloud { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+}
+.tag-pill-count { color: var(--amber); font-size: 0.75rem; }
+
+/* Sized by frequency (1 = rarest, 5 = most common) so the cloud reads at a glance. */
+.tag-pill--1 { font-size: 0.78rem; padding: 0.4rem 0.75rem; opacity: 0.82; }
+.tag-pill--2 { font-size: 0.85rem; }
+.tag-pill--3 { font-size: 0.95rem; padding: 0.55rem 1rem; }
+.tag-pill--4 { font-size: 1.08rem; padding: 0.6rem 1.05rem; font-weight: 500; }
+.tag-pill--5 { font-size: 1.25rem; padding: 0.65rem 1.15rem; font-weight: 600; }
+.tag-pill--4 .tag-pill-count, .tag-pill--5 .tag-pill-count { color: var(--kodachrome); }
+
+.tag-page-count { color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.85rem; margin-top: -1rem; margin-bottom: 1.5rem; }
+.tag-occurrences { display: flex; flex-direction: column; gap: 1.25rem; }
+.tag-occurrence { text-decoration: none; color: inherit; display: block; border-left: 3px solid var(--paper-dim); padding-left: 1rem; }
+.tag-occurrence:hover { border-left-color: var(--kodachrome); }
+.tag-occurrence-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); margin-left: 0.5rem; }
+
+/* ---------------- Lightbox ---------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+.lightbox[hidden] { display: none; }
+.lightbox-img {
+  max-height: 78vh;
+  max-width: 90vw;
+  box-shadow: 0 0 80px 10px rgba(224, 169, 64, 0.15);
+  border: 6px solid #d8cdb4;
+}
+.lightbox-caption { color: var(--paper); font-family: var(--font-mono); font-size: 0.85rem; margin-top: 1rem; max-width: 40rem; text-align: center; }
+.lightbox-close, .lightbox-prev, .lightbox-next {
+  position: absolute;
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 2.2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.5rem;
+}
+.lightbox-close { top: 1rem; right: 1.5rem; }
+.lightbox-prev { left: 1rem; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 1rem; top: 50%; transform: translateY(-50%); }
+.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover { color: var(--amber); }
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 640px) {
+  .site-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .diary-page, .stop-page, .tag-page, .index-page { padding: 1.5rem 1.1rem; }
+  .map { height: 50vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .slide:hover, .slide:focus-visible { transform: none; }
+  .stop-card:hover { transform: none; }
+}

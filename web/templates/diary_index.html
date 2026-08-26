@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Diary · The Trip{% endblock %}
+{% block content %}
+<article class="index-page">
+  <header class="index-page-head">
+    <h1>The diary</h1>
+    <p>Every day, in the words of Denise (D, 12), Francis (F, 9), Helena (H, 7) and Graham &amp; Monique (G/M).</p>
+  </header>
+  {% for month, month_days in days|groupby("month") %}
+  <section class="diary-month">
+    <h2 class="diary-month-heading">{{ month_days[0].month_label }}</h2>
+    <ul class="diary-list">
+      {% for day in month_days %}
+      <li>
+        <a class="diary-list-item diary-list-item--{{ day.leg }}" href="{{ root }}diary/{{ day.date }}.html">
+          <span class="diary-list-datewrap">
+            <span class="diary-list-date">{{ day.weekday }} {{ day.date }}</span>
+            <span class="diary-list-place">{{ day.diary_place }}</span>
+          </span>
+          <span class="diary-list-miles">{{ day.miles_so_far }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</article>
+{% endblock %}

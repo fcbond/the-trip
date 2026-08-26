@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ photo.id }} · The Trip{% endblock %}
+{% block content %}
+<article class="stop-page photo-page">
+  <header class="stop-page-head">
+    <p class="stop-page-dates">{{ photo.date }} &middot; <span class="photo-page-id">{{ photo.id }}</span></p>
+    <h1 class="stop-page-name">
+      {%- if photo.place -%}
+        {{ photo.place }}{% if photo.country %}, {{ photo.country }}{% endif %}
+      {%- else -%}
+        {{ photo.description }}
+      {%- endif -%}
+    </h1>
+  </header>
+
+  {% set full = root ~ "photos/" ~ photo.image_leg ~ "/full/" ~ photo.id ~ ".jpg" %}
+  <figure class="photo-page-frame">
+    <a class="photo-page-window" href="{{ full }}" title="View the full-resolution scan">
+      <img src="{{ root }}photos/{{ photo.image_leg }}/display/{{ photo.id }}.jpg" alt="{{ photo.description }}">
+    </a>
+    <figcaption class="photo-page-fullres">
+      <a href="{{ full }}">View full size</a>
+      <a href="{{ full }}" download="{{ photo.id }}.jpg">Download</a>
+    </figcaption>
+  </figure>
+
+  <p class="photo-page-desc">{{ photo.description_html }}</p>
+
+  <nav class="stop-page-links photo-page-links">
+    {% if stop %}<a href="{{ root }}stops/{{ stop.slug }}.html">See the {{ stop.name }} stop page &rarr;</a>{% endif %}
+    {% if has_day %}<a href="{{ root }}diary/{{ photo.date }}.html">Read the diary for {{ photo.date }} &rarr;</a>{% endif %}
+    {% if stop %}<a href="{{ root }}index.html?stop={{ stop.slug }}#map">View on the map &rarr;</a>{% endif %}
+  </nav>
+
+  <p class="photo-page-credit">
+    Photo &copy; 1976 Monique Bond &middot;
+    <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>
+  </p>
+</article>
+{% endblock %}

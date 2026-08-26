@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}The Trip · 1976{% endblock %}</title>
+<meta name="description" content="A family archive of an overland trip from the UK to Australia, 1976.">
+<link rel="icon" type="image/svg+xml" href="{{ root }}{{ asset('img/favicon.svg') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ root }}{{ asset('css/style.css') }}">
+</head>
+<body>
+<div class="room">
+  <header class="site-header">
+    <a class="brand" href="{{ root }}index.html">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span class="brand-text">The Trip<span class="brand-year">1976 – 77</span></span>
+    </a>
+    <nav class="site-nav">
+      <a href="{{ root }}index.html">Map</a>
+      <a href="{{ root }}diary/index.html">Diary</a>
+      <a href="{{ root }}tags/index.html">Tags</a>
+    </nav>
+  </header>
+
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    {% if is_complete %}
+    <p>Scanned from the original Kodachrome slides &amp; family diaries. The complete trip: {{ leg_summary }}.</p>
+    {% else %}
+    <p>Scanned from the original Kodachrome slides &amp; family diaries. In progress: {{ leg_summary }}.</p>
+    {% endif %}
+  </footer>
+</div>
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+  <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous slide">&#8249;</button>
+  <img class="lightbox-img" id="lightbox-img" alt="">
+  <p class="lightbox-caption" id="lightbox-caption"></p>
+  <button class="lightbox-next" id="lightbox-next" aria-label="Next slide">&#8250;</button>
+</div>
+<script src="{{ root }}{{ asset('js/lightbox.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

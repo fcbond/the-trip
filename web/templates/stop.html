@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ stop.name }} · The Trip{% endblock %}
+{% block content %}
+<article class="stop-page">
+  <header class="stop-page-head">
+    <p class="stop-page-dates">{{ stop.date_start }}{% if stop.date_end != stop.date_start %} – {{ stop.date_end }}{% endif %}</p>
+    <h1 class="stop-page-name">{{ stop.name }}</h1>
+    <div class="stop-page-links">
+      {% if stop.wikipedia %}<a href="{{ stop.wikipedia }}" target="_blank" rel="noopener">Wikipedia ↗</a>{% endif %}
+      {% if stop.wikidata %}<a href="https://www.wikidata.org/wiki/{{ stop.wikidata }}" target="_blank" rel="noopener">Wikidata ↗</a>{% endif %}
+      {% for link in stop.links %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} ↗</a>{% endfor %}
+    </div>
+  </header>
+
+  {% if stop.narrative_excerpt %}
+  <blockquote class="stop-narrative">{{ stop.narrative_excerpt }}</blockquote>
+  {% endif %}
+  {% if stop.mileage_note %}
+  <p class="stop-mileage">{{ stop.mileage_note }}</p>
+  {% endif %}
+
+  {% if photo_groups %}
+  <section class="stop-photos">
+    <h2 class="section-heading section-heading--small">Slides from {{ stop.name }}</h2>
+    {% for group in photo_groups %}
+      {% if group.landmark %}
+      <h3 class="stop-landmark-name">
+        {{ group.landmark.name }}
+        {% if group.landmark.wikipedia %}<a href="{{ group.landmark.wikipedia }}" target="_blank" rel="noopener">Wikipedia ↗</a>{% endif %}
+        {% if group.landmark.wikidata %}<a href="https://www.wikidata.org/wiki/{{ group.landmark.wikidata }}" target="_blank" rel="noopener">Wikidata ↗</a>{% endif %}
+        {% for link in group.landmark.links %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} ↗</a>{% endfor %}
+      </h3>
+      {% endif %}
+      <div class="slide-grid">
+        {% for photo in group.photos %}{{ m.slide_mount(photo, root) }}{% endfor %}
+      </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if days %}
+  <section class="stop-diary">
+    <h2 class="section-heading section-heading--small">Diary entries</h2>
+    {% for day in days %}
+    <div class="stop-diary-day">
+      <a class="stop-diary-day-link" href="{{ root }}diary/{{ day.date }}.html">{{ day.weekday }} {{ day.date }}</a>
+      {% for entry in day.entries %}{{ m.diary_entry(entry) }}{% endfor %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <nav class="diary-pager">
+    {% if prev_stop %}<a class="pager-prev" href="{{ root }}stops/{{ prev_stop.slug }}.html">&larr; {{ prev_stop.name }}</a>{% else %}<span></span>{% endif %}
+    <a class="pager-index" href="{{ root }}index.html">Map</a>
+    {% if next_stop %}<a class="pager-next" href="{{ root }}stops/{{ next_stop.slug }}.html">{{ next_stop.name }} &rarr;</a>{% else %}<span></span>{% endif %}
+  </nav>
+</article>
+{% endblock %}

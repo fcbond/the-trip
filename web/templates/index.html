@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}The Trip · 1976 – a family's overland journey{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="hero-eyebrow">London → Bombay along the overland, then on to Australia</p>
+  <h1 class="hero-title">The Trip</h1>
+  <p class="hero-sub">In the summer of 1976 the Bond family — Graham, Monique, Denise (12), Francis (9) and Helena (7) — packed a white Ford Transit camper van named <strong>Snowy Fred</strong> and drove from England to Bombay, through Yugoslavia, Greece, Turkey, Iran, Afghanistan, Pakistan and India, before flying on to Australia via Bangkok and Singapore. This site rebuilds our trip from the diaries, letters and slides.</p>
+  <p>Mum (Monique) took most of the photos, but we couldn't develop them until we reached Australia!   We kids were without school for 5 months, so everyday we would have to write a paragraph in our diary.   It was a fantastic trip!</p>
+
+  <p>You can look at the trip by clicking on the map, going chronologically through the diary entries, or clicking on a stop.</p>
+  
+  <p class="hero-note">The whole trip, {{ leg_summary }} — {{ stops|length }} stops, {{ days_count }} diary days, London to Brisbane.</p>
+</section>
+
+<section class="map-section">
+  <div class="map-toolbar" role="tablist" aria-label="Map style">
+    <button type="button" class="map-layer-btn is-active" data-layer="normal" role="tab" aria-selected="true">Map</button>
+    <button type="button" class="map-layer-btn" data-layer="terrain" role="tab" aria-selected="false">Terrain</button>
+    <button type="button" class="map-layer-btn" data-layer="adventure" role="tab" aria-selected="false">Old Chart</button>
+  </div>
+  <div id="map" class="map" data-stops-url="{{ root }}data/stops.json" data-root="{{ root }}"></div>
+</section>
+
+<section class="stops-strip">
+  <h2 class="section-heading">Stops along the way</h2>
+  <div class="strip-scroll-wrap">
+    <div class="strip-scroll">
+      {% for stop in stops %}
+      <a class="stop-card" href="{{ root }}stops/{{ stop.slug }}.html">
+        <span class="stop-card-date">{{ stop.date_start[5:7] }}/{{ stop.date_start[8:10] }}</span>
+        <span class="stop-card-name">{{ stop.name }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="{{ root }}{{ asset('js/map.js') }}"></script>
+<script src="{{ root }}{{ asset('js/strip-scroll.js') }}"></script>
+{% endblock %}

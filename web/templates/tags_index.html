@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Tags · The Trip{% endblock %}
+{% block content %}
+<article class="index-page">
+  <header class="index-page-head">
+    <h1>Recurring themes</h1>
+    <p>Some things came up again and again in the diaries.</p>
+  </header>
+  <ul class="tag-cloud">
+    {% for tag in tags %}
+    <li><a class="tag-pill tag-pill--{{ tag.size }}" href="{{ root }}tags/{{ tag.slug }}.html">{{ tag.label }} <span class="tag-pill-count">{{ tag.count }}</span></a></li>
+    {% endfor %}
+  </ul>
+</article>
+{% endblock %}
