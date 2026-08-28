@@ -2,28 +2,38 @@
 {% import "_macros.html" as m %}
 {% block title %}{{ day.date }} — {{ day.place_label }} · The Trip{% endblock %}
 {% block content %}
-<article class="diary-page" data-diary-layout>
+<article class="diary-page{% if photos|length >= 3 %} can-alongside{% endif %}" data-diary-layout>
   <header class="diary-page-head">
     <p class="diary-page-date">{{ day.weekday }} {{ day.date }}</p>
     <h1 class="diary-page-place">{{ day.place_label }}
       {% if stop %}<a class="diary-page-stop-link" href="{{ root }}stops/{{ stop.slug }}.html">see {{ stop.name }} →</a>{% endif %}
     </h1>
-    {% if photos %}
+    {% if photos|length >= 3 %}
     <div class="layout-toggle" hidden data-layout-toggle>
-      <button type="button" data-layout-value="below" aria-pressed="true">Slides below</button>
-      <button type="button" data-layout-value="alongside" aria-pressed="false">Slides alongside</button>
+      <button type="button" data-layout-value="alongside" aria-pressed="true">Slides alongside</button>
+      <button type="button" data-layout-value="below" aria-pressed="false">Slides below</button>
     </div>
     {% endif %}
   </header>
 
+  {#- A day with only a slide or two has no column to fill, so its slides sit
+      in the diary itself, after the first entry - the same place the
+      children's drawings go. Days with more keep the section below, which
+      the alongside layout can lift into a column. -#}
+  {% set inline_slides = photos if photos|length < 3 else [] %}
   <div class="diary-entries">
     {% for entry in day.entries %}
+      {%- if inline_slides and loop.index0 == 0 %}
+      <div class="slides-inline">
+        {% for photo in inline_slides %}{{ m.slide_mount(photo, root) }}{% endfor %}
+      </div>
+      {%- endif %}
       {{ m.diary_entry(entry) }}
       {% if loop.index0 in pix_after %}{{ m.drawings_row(pix_after[loop.index0], root) }}{% endif %}
     {% endfor %}
   </div>
 
-  {% if photos %}
+  {% if photos and not inline_slides %}
   <section class="diary-photos">
     <h2 class="section-heading section-heading--small">Slides from this day</h2>
     <div class="slide-grid slide-flow">

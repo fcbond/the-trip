@@ -39,8 +39,11 @@ uv run python scripts/build.py
 STATICRYPT_PASSWORD=... uv run python scripts/apply_password.py
 ```
 
-`process_photos.py` is only needed when a leg's source scans change - it is
-by far the slowest step. Editing `metadata/*.toml` needs
+`process_photos.py` is only needed when a leg's source scans change, or
+when a derivative size changes - it is by far the slowest step, about ten
+minutes for all seven legs. **It rewrites `full/` too, so
+`embed_metadata.py` must follow it**, or the distributed copies lose their
+credit and licence. Editing `metadata/*.toml` needs
 `embed_metadata.py` (captions and places are embedded in the distributed
 files) and the last two steps.
 
@@ -423,14 +426,14 @@ GitHub Pages caps a **published site at 1 GB** (and soft-limits bandwidth to
 
 | | current | planned |
 |---|---|---|
-| `thumb/` 400 px | 27 MB | 27 MB |
-| `display/` | 277 MB @ 1600 px q87 | **153 MB @ 1200 px q82** |
-| `full/` native res | - | **544 MB** |
+| `thumb/` | 27 MB @ 400 px | **55 MB @ 600 px q85** |
+| `display/` | 277 MB @ 1600 px q87 | **165 MB @ 1200 px q82** |
+| `full/` native res | - | **488 MB** |
 | diary-pix `cropped/` | 37 MB | 37 MB |
 | HTML (photo/diary/stops/tags) | 57 MB | 57 MB |
-| **total `docs/`** | **401 MB** | **~818 MB** |
+| **total `docs/`** | **401 MB** | **792 MB** |
 
-That leaves ~20% headroom under the cap. Shrinking `display` is what buys
+That leaves ~23% headroom under the cap. Shrinking `display` is what buys
 it - at the current 1600 px/q87 the total would be ~955 MB, too close to
 the ceiling to build on. If more headroom is wanted later, `display` at
 1400 px/q85 is 219 MB and 1200 px/q82 is 153 MB; those are measured, not

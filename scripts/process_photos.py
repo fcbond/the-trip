@@ -114,7 +114,11 @@ def dedupe_by_id(files: list[Path]) -> list[Path]:
 # deliberately smaller than it once was (1600px/q87): a published GitHub
 # Pages site is capped at 1GB, and shipping full/ alongside it at the old
 # size would land ~955MB, with no room left. See README.md for the budget.
-THUMB_MAX_EDGE, THUMB_QUALITY = 400, 87
+#
+# thumb is 600px because the diary shows slides at up to 300px, and a
+# retina screen wants twice the pixels it displays. It costs ~25MB across
+# the archive, which the budget above has room for.
+THUMB_MAX_EDGE, THUMB_QUALITY = 600, 85
 DISPLAY_MAX_EDGE, DISPLAY_QUALITY = 1200, 82
 FULL_QUALITY = 95
 

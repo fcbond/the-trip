@@ -23,7 +23,10 @@ any script - that stays true. Metadata gets written to *derivatives and
 copies*, never the masters:
 
 - **thumb/display/full** - all three are regenerated from scratch on every
-  run of `process_photos.py`; metadata-writing becomes one more step in
+  run of `process_photos.py`, **which wipes whatever this script wrote**,
+  so `embed_metadata.py` has to follow it every time - changing a
+  thumbnail size silently strips the credit and licence from every
+  full-resolution copy until it is re-run; metadata-writing becomes one more step in
   `make_derivative()`, right after Pillow saves the JPEG (Pillow's
   re-encode strips any pre-existing EXIF, so this has to happen after the
   save, not before).

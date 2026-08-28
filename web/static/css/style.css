@@ -40,7 +40,7 @@ img { max-width: 100%; display: block; }
 }
 
 .room {
-  max-width: 1100px;
+  max-width: min(1500px, 94vw);
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -334,12 +334,13 @@ img { max-width: 100%; display: block; }
 }
 .stop-page-links { display: flex; gap: 1.25rem; margin-bottom: 1.5rem; }
 
-.diary-entries { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
+.diary-entries { display: block; margin-bottom: 2rem; max-width: 68ch; }
+.diary-entries > .entry { margin-bottom: 1.1rem; }
 
 /* ---------------- Diary layout toggle ---------------- */
 /* Below 900px the alongside mode has no effect, so the control would be
    dead - hide it rather than offer a choice that does nothing. */
-@media (max-width: 899px) {
+@media (max-width: 1039px) {
   .layout-toggle { display: none !important; }
 }
 .layout-toggle {
@@ -371,32 +372,48 @@ img { max-width: 100%; display: block; }
    flow, so they fill the column beside it and then carry on full width
    once the text ends - no need to guess how many fit. Only inline-level
    content wraps around a float, which is why the grid becomes a plain
-   block of inline-blocks here. Narrow screens keep the stacked layout. */
-@media (min-width: 900px) {
-  .diary-page[data-layout="alongside"] .diary-entries {
+   block of inline-blocks here.
+
+   The slide size steps down as the window narrows, so the column beside
+   the text always holds whole slides rather than one and a sliver:
+
+     >= 1460px   two at 300px
+     >= 1330px   two at 240px
+     >= 1100px   one at 300px
+     >= 1040px   one at 240px
+     below that  no float at all - every slide goes under the diary
+
+   Breakpoints are measured, not derived: the usable width is the shell
+   (min(1500px, 94vw)) less the page padding and the 34rem text column,
+   and each mount costs its width plus 18px of chrome and gutter. */
+@media (min-width: 1040px) {
+  .diary-page.can-alongside:not([data-layout="below"]) .diary-entries {
     float: left;
-    width: 54%;
+    width: min(34rem, 50%);
     margin-right: 2rem;
     margin-bottom: 1.5rem;
   }
-  .diary-page[data-layout="alongside"] .diary-photos { overflow: visible; }
-  .diary-page[data-layout="alongside"] .slide-flow {
+  .diary-page.can-alongside:not([data-layout="below"]) .slide-flow {
     display: block;
     margin-bottom: 0;
   }
-  .diary-page[data-layout="alongside"] .slide-flow .slide {
+  .diary-page.can-alongside:not([data-layout="below"]) .slide-flow .slide {
     display: inline-block;
     vertical-align: top;
-    width: 150px;
+    width: var(--slide-alongside);
     margin: 0 1.1rem 1.1rem 0;
   }
-  .diary-page[data-layout="alongside"] .diary-pager { clear: both; }
-  .diary-page[data-layout="alongside"] .diary-photos::after {
+  .diary-page.can-alongside:not([data-layout="below"]) .diary-pager { clear: both; }
+  .diary-page.can-alongside:not([data-layout="below"]) .diary-photos::after {
     content: "";
     display: block;
     clear: both;
   }
 }
+@media (min-width: 1040px) { .diary-page { --slide-alongside: 240px; } }
+@media (min-width: 1100px) { .diary-page { --slide-alongside: 300px; } }
+@media (min-width: 1330px) { .diary-page { --slide-alongside: 240px; } }
+@media (min-width: 1460px) { .diary-page { --slide-alongside: 300px; } }
 .entry { display: flex; gap: 0.9rem; align-items: baseline; }
 .entry-speaker {
   flex: 0 0 auto;
@@ -418,6 +435,23 @@ img { max-width: 100%; display: block; }
 
 /* Kids' own drawings/diary pages - kept plain so the drawing itself is the
    focus, tied to the speaker above it by a thin accent border. */
+/* One or two slides sit in the run of the diary rather than in a column,
+   set in from the speaker margin like the children's drawings above. */
+.slides-inline { margin: -0.3rem 0 0.5rem 2.2rem; }
+.slides-inline .slide { width: 300px; }
+/* On a wide screen the slide moves out into the margin beside the diary,
+   where the text was never going to reach - so it reads early, next to
+   the entry it belongs with, and the prose keeps its measure. */
+@media (min-width: 1040px) {
+  .diary-entries { position: relative; overflow: visible; }
+  .slides-inline {
+    float: right;
+    clear: right;
+    width: 300px;
+    margin: -0.3rem calc(-300px - 2rem) 1rem 2rem;
+  }
+}
+
 .drawings-row {
   display: flex;
   flex-wrap: wrap;
@@ -488,7 +522,7 @@ img { max-width: 100%; display: block; }
 /* ---------------- Slide mounts ---------------- */
 .slide-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.1rem;
   margin-bottom: 1rem;
 }
@@ -524,7 +558,7 @@ img { max-width: 100%; display: block; }
   text-align: left;
   line-height: 1.35;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
