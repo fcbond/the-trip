@@ -156,7 +156,10 @@ def main(source_root=DEFAULT_SOURCE_ROOT):
             with Image.open(raster) as im:
                 autocrop_whitespace(im.convert("RGB")).save(cropped_path, "JPEG", quality=92)
 
-            make_derivative(cropped_path, thumb_dir / f"{pid}.jpg", 400)
+            # The diary page shows a drawing at up to 440px, and a retina
+            # screen wants twice the pixels it displays - so 900, matching
+            # what photos.py does for slides.
+            make_derivative(cropped_path, thumb_dir / f"{pid}.jpg", 900)
             make_derivative(cropped_path, display_dir / f"{pid}.jpg", 1600)
 
             table = tomlkit.table()

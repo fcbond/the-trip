@@ -27,25 +27,29 @@ uv run python scripts/build.py            # -> build/ (plain, local preview)
 uv run python -m http.server 8000 --directory build
 # open http://localhost:8000/index.html
 
-STATICRYPT_PASSWORD=... uv run python scripts/apply_password.py  # -> docs/ (committed; to be served by GitHub Pages - not yet enabled)
+STATICRYPT_PASSWORD=... uv run python scripts/apply_password.py  # -> docs/ (committed, served by GitHub Pages at fcbond.github.io/the-trip)
 ```
 
 The full pipeline, when the photos themselves have changed:
 
 ```bash
-uv run python scripts/process_photos.py "<src dir>" <leg> build   # per leg: thumb/display/full
-uv run python scripts/embed_metadata.py                           # CC BY credit into full/
+uv run python scripts/photos.py          # derivatives + embedded credit, all legs
 uv run python scripts/build.py
 STATICRYPT_PASSWORD=... uv run python scripts/apply_password.py
+uv run python scripts/deploy.py -m "what changed"
 ```
 
-`process_photos.py` is only needed when a leg's source scans change, or
-when a derivative size changes - it is by far the slowest step, about ten
-minutes for all seven legs. **It rewrites `full/` too, so
-`embed_metadata.py` must follow it**, or the distributed copies lose their
-credit and licence. Editing `metadata/*.toml` needs
-`embed_metadata.py` (captions and places are embedded in the distributed
-files) and the last two steps.
+`photos.py` is only needed when a leg's source scans change, or when a
+derivative size changes - it is by far the slowest step, about ten minutes
+for all seven legs. It writes the derivatives *and* the embedded credit in
+one pass, deliberately: regenerating rewrites `full/` from the master and
+discards whatever metadata the previous copy carried, so the two steps
+were never safe to run apart. `--only-metadata` re-stamps without
+re-encoding; `--report-places` is the caption check and writes nothing.
+
+Editing a caption or a place in `metadata/*.toml` still needs
+`photos.py --only-metadata`, because those values are embedded in the
+distributed copies as well as shown on the page - then rebuild and deploy.
 
 CSS and JS URLs carry a cache-busting `?v=<hash>` suffix, generated in
 `build.py` by `asset_versions()` from each file's own bytes - so a
@@ -60,7 +64,7 @@ is the only encrypted, committed, deployed output — never hand-edit it.
 to one path silently rewrites another. Two known cases:
 
 - `build/photos/**` and `docs/photos/**` share inodes, so re-running
-  `process_photos.py` into `build/` rewrites the committed `docs/` images
+  `photos.py` into `build/` rewrites the committed `docs/` images
   in place. A `git status` full of modified `docs/photos/**` right after a
   photo rebuild is this, not a bug.
 - `web/static/**` and `docs/static/**` share inodes, which is the worse
@@ -185,7 +189,7 @@ One leg = one country/section of the trip (`turkey`, `iran`, `afghanistan`,
    good as the stop ranges: where two stops cover the same day, file order
    decides, which is arbitrary. A photo landing on the wrong stop usually
    means its `place` is caption text rather than a place name — see
-   `embed_metadata.py --report-places`.
+   `photos.py --report-places`.
 
 Steps 2 and 3 only ever match stops **within the photo's own leg**, so a
 photo whose roll crossed a border mid-film needs moving to the other leg's
@@ -204,7 +208,7 @@ Nearly always its `place` is caption text rather than a place name, or
 names a place no stop or alias knows. Find out which:
 
 ```bash
-uv run python scripts/embed_metadata.py --report-places   # caption-ish places
+uv run python scripts/photos.py --report-places   # caption-ish places
 uv run python scripts/build.py                            # warns about unmatched photos
 ```
 
@@ -278,12 +282,12 @@ Only needed when the source scans change; it is by far the slowest step.
 The masters live in the private archive repo, so point the script at them:
 
 ```bash
-uv run python scripts/process_photos.py "$TRIP_ARCHIVE/<leg folder>" <leg> build
-uv run python scripts/embed_metadata.py --legs <leg>
+uv run python scripts/photos.py "$TRIP_ARCHIVE/<leg folder>" <leg> build
+uv run python scripts/photos.py --legs <leg>
 uv run python scripts/build.py
 ```
 
-`process_photos.py` writes `thumb/`, `display/` and `full/` for every
+`photos.py` writes `thumb/`, `display/` and `full/` for every
 unique photo. `publish_full_res.py` and `process_diary_pix.py` take
 `--source-root` (or `$TRIP_ARCHIVE`) for the same reason.
 
@@ -353,7 +357,7 @@ for b in broken: print(b)
 Also worth checking after processing any leg's photos: every id in
 `<leg>_photos.toml` has a matching file in each of
 `build/photos/<leg>/{thumb,display,full}/`
-(a mismatch usually means a filename convention `process_photos.py`'s
+(a mismatch usually means a filename convention `photos.py`'s
 `ID_RE` doesn't recognize yet — it's already been extended twice for
 leg-specific quirks, see its docstring).
 
@@ -514,7 +518,7 @@ metadata as the attribution link (see `METADATA.md`).
 
 All of it is in place; recorded here so the reasoning survives.
 
-- **`process_photos.py`** writes a third derivative, `full/`, at native
+- **`photos.py`** writes a third derivative, `full/`, at native
   resolution, and `display` dropped to 1200px/q82 to make room under the
   Pages cap. An already-JPEG source is **byte-copied** into `full/` rather
   than re-encoded: passing it through Pillow at q95 inflated 306 MB of
@@ -522,11 +526,11 @@ All of it is in place; recorded here so the reasoning survives.
   BMP scans get encoded.
 - **`publish_full_res.py`, `process_diary_pix.py`** take `--source-root`,
   falling back to `$TRIP_ARCHIVE`, then the pre-split in-repo `data/`.
-  `process_photos.py` already took its source as an argument. So no script
+  `photos.py` already took its source as an argument. So no script
   in the public repo needs a `data/` directory that isn't there.
 - **`photo.html`** links the display image to `full/`, with a separate
   `<a download>` beside the caption, so a visitor can both view and save.
-- **`embed_metadata.py`** stamps the CC BY credit block into `full/`, the
+- **`photos.py`** stamps the CC BY credit block into `full/`, the
   copy most likely to travel. See `METADATA.md`.
 
 **Still to move when the public repo is built:** the one-time scripts and

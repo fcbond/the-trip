@@ -552,7 +552,7 @@ def main():
 
     if DOCS.exists():
         for item in DOCS.iterdir():
-            if item.name in ("photos",):  # already built by process_photos.py
+            if item.name in ("photos",):  # already built by photos.py
                 continue
             if item.is_dir():
                 shutil.rmtree(item)

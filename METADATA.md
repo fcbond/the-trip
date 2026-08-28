@@ -3,7 +3,7 @@
 Spec for writing EXIF/IPTC/XMP metadata directly into the photo files
 themselves (thumb, display, and full), so captions/credit/location
 survive once a photo is downloaded and leaves the site. Implemented as
-`scripts/embed_metadata.py`; this document is the field spec it follows
+`scripts/photos.py`; this document is the field spec it follows
 and the reasoning behind each choice.
 
 ## Why embed metadata at all
@@ -23,10 +23,11 @@ any script - that stays true. Metadata gets written to *derivatives and
 copies*, never the masters:
 
 - **thumb/display/full** - all three are regenerated from scratch on every
-  run of `process_photos.py`, **which wipes whatever this script wrote**,
-  so `embed_metadata.py` has to follow it every time - changing a
-  thumbnail size silently strips the credit and licence from every
-  full-resolution copy until it is re-run; metadata-writing becomes one more step in
+  run of `photos.py`, which discards whatever the previous copy carried.
+  That is why generating derivatives and writing metadata are one program:
+  run apart, a change to a thumbnail size silently strips the credit and
+  licence from all 903 distributed copies until someone remembers the
+  second command; metadata-writing becomes one more step in
   `make_derivative()`, right after Pillow saves the JPEG (Pillow's
   re-encode strips any pre-existing EXIF, so this has to happen after the
   save, not before).
@@ -44,7 +45,7 @@ copies*, never the masters:
 ## Character encoding
 
 IPTC IIM defaults to Latin-1, which silently mangles the Turkish, Persian
-and Indic characters in these captions and place names. `embed_metadata.py`
+and Indic characters in these captions and place names. `photos.py`
 passes `-charset iptc=UTF8` and sets `IPTC:CodedCharacterSet=UTF8`, which
 is how IPTC declares otherwise. XMP and EXIF are UTF-8 natively and need
 no such handling. Drop those flags and the damage is quiet - exiftool
@@ -56,7 +57,7 @@ warns once per file and writes the mangled bytes anyway.
 pass with a consistent CLI, unlike Pillow (EXIF-only) or piexif
 (EXIF-only, no IPTC/XMP). Installed at `/usr/bin/exiftool`
 (`sudo apt install libimage-exiftool-perl` elsewhere).
-`embed_metadata.py` shells out to it once per file. If that gets slow
+`photos.py` shells out to it once per file. If that gets slow
 across 1000 files, exiftool's `-json` batch input or `-stay_open` would
 cut the per-invocation startup cost - not worth the complexity until the
 runtime actually hurts.
@@ -195,13 +196,12 @@ exiftool \
 
 ## Running it
 
-`embed_metadata.py` runs *after* `process_photos.py` (which regenerates
+`photos.py` runs *after* `photos.py` (which regenerates
 the derivatives from scratch, wiping any previous metadata) and *before*
 `build.py`/`apply_password.py`:
 
 ```bash
-uv run python scripts/process_photos.py "<src>" <leg> build   # per leg
-uv run python scripts/embed_metadata.py                       # stamps full/
+uv run python scripts/photos.py                               # derivatives + metadata
 uv run python scripts/build.py
 STATICRYPT_PASSWORD=... uv run python scripts/apply_password.py
 ```

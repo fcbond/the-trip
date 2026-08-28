@@ -25,7 +25,8 @@ import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from process_photos import JUNK_NAMES, JUNK_SUFFIXES, dedupe, dedupe_by_id, photo_id
+from photos import (JUNK_NAMES, JUNK_SUFFIXES, LEG_FOLDERS, SOURCE_SUFFIXES,
+                    dedupe, dedupe_by_id, photo_id)
 
 ROOT = Path(__file__).resolve().parents[1]
 # The masters are not in this repo. Resolution order: --source-root, then
@@ -35,24 +36,11 @@ ENV_ROOT = os.environ.get("TRIP_ARCHIVE")
 DEFAULT_RAW_ROOT = Path(ENV_ROOT) if ENV_ROOT else ROOT / "data" / "The Trip Photos _76"
 DEFAULT_OUT = ROOT / "build" / "full_res"
 DEFAULT_TAG = "full-res-photos"
-SOURCE_SUFFIXES = {".jpg", ".jpeg", ".bmp", ".bm", ".png"}
 
-# leg slug -> source folder name under RAW_ROOT, matching how
-# process_photos.py was invoked by hand when each leg was added.
-# "Superceded" isn't a leg and is deliberately excluded.
-LEG_FOLDERS = {
-    "uk_greece": "1.1-2.12 UK-Greece",
-    "turkey": "2.13 - 5.25 Turkey",
-    "iran": "5.26-10.20 Iran",
-    "afghanistan": "10.21-14.32 Afghanistan",
-    "pakistan": "14.33 - 16.38 Pakistan",
-    "india": "17.01 - 26.8 India",
-    "bangkok": "26.9 - Bangkok",
-}
 
 
 def leg_files(leg_slug: str, raw_root: Path) -> list[Path]:
-    """Same source-file selection/dedupe as process_photos.py, so the
+    """Same source-file selection/dedupe as photos.py, so the
     archive matches exactly the photos that made it onto the site.
     """
     src_dir = raw_root / LEG_FOLDERS[leg_slug]

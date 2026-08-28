@@ -450,7 +450,17 @@ img { max-width: 100%; display: block; }
     width: 300px;
     margin: -0.3rem calc(-300px - 2rem) 1rem 2rem;
   }
+  /* Contain the float. Without this the entries box is only as tall as the
+     text, and a day whose slides run deeper than its diary drops them out
+     of the page card and over the footer. */
+  .diary-entries::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
 }
+/* Belt and braces: whatever floats above it, the pager starts below. */
+.diary-pager { clear: both; }
 
 .drawings-row {
   display: flex;

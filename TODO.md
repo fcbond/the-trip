@@ -15,7 +15,7 @@ all 903 photos, with none unmatched to a stop.
       Recheck any time with:
 
       ```bash
-      uv run python scripts/embed_metadata.py --report-places
+      uv run python scripts/photos.py --report-places
       grep -c "worth a look" metadata/*_photos.toml
       ```
 
@@ -48,7 +48,7 @@ all 903 photos, with none unmatched to a stop.
       Afghanistan were digitised at 1532x980; every other leg at 2043x1307.
       So for those three the "full size" link on a photo page offers
       essentially what is already on screen. Nothing in the code needs
-      changing - re-run `process_photos.py` on better scans.
+      changing - re-run `photos.py` on better scans.
 
 - [ ] **Vendor Leaflet**, if the site should survive unpkg going away. It
       is BSD-2-Clause, so copying `leaflet.js`/`leaflet.css` into
@@ -96,7 +96,7 @@ metadata/*_photos.json          (4 files: bangkok, india, pakistan, uk_greece)
 ```
 
 184 KB in total. What's left is the live pipeline: `build.py`,
-`embed_metadata.py`, `apply_password.py`, `process_photos.py`,
+`apply_password.py`, `photos.py`,
 `publish_full_res.py`, `process_diary_pix.py` — none of which needs a
 `data/` directory, since the last three take `--source-root`.
 
