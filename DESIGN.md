@@ -58,6 +58,20 @@ mechanically, but only by removing the measure cap — which produced
 112-character lines. The margin float gets the same "photo early, text
 continues" effect with the measure intact.
 
+## Stops get the same treatment
+
+A stop page pairs its diary days with its slides exactly as a diary day
+does, and by the same rules: three slides or more and the diary floats left
+with the slides beside it; one or two and they float into the margin. The
+CSS is written once against two roles - `.layout-text` and
+`.layout-photos` - rather than per page type, so the cascade and the
+centring are shared.
+
+The stop template orders those two sections differently depending on which
+case applies, because a float can only rise as far as the content before
+it: text first when the text is the thing being floated, slides first when
+they are.
+
 ## Why the slides float rather than sit in a grid
 
 In the alongside layout the diary text floats left and the slides run in
@@ -152,6 +166,11 @@ collapses into a four-pointed star.
   below 1040px where it would do nothing. The alongside layout is what the
   CSS does on its own, so a visitor without JavaScript gets the default
   rather than a fallback.
+- **Passing a variable to a template is not the same as it existing.**
+  `stop.html` received `photo_groups` but not `photos`, so a
+  `{% if photos|length >= 3 %}` guard silently read as zero and the whole
+  alongside layout did nothing. Jinja does not complain about an undefined
+  name in a boolean test.
 - **`figure` carries a 40px browser margin.** It went unreset for a long
   time, quietly shrinking every slide mount and inflating the gaps. Worth
   remembering before adding another figure-based component.

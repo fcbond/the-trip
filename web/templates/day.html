@@ -21,7 +21,7 @@
       children's drawings go. Days with more keep the section below, which
       the alongside layout can lift into a column. -#}
   {% set inline_slides = photos if photos|length < 3 else [] %}
-  <div class="diary-entries">
+  <div class="diary-entries layout-text">
     {% for entry in day.entries %}
       {%- if inline_slides and loop.index0 == 0 %}
       <div class="slides-inline">
@@ -34,7 +34,7 @@
   </div>
 
   {% if photos and not inline_slides %}
-  <section class="diary-photos">
+  <section class="diary-photos layout-photos">
     <h2 class="section-heading section-heading--small">Slides from this day</h2>
     <div class="slide-grid slide-flow">
       {% for photo in photos %}{{ m.slide_mount(photo, root) }}{% endfor %}

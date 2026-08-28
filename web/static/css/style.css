@@ -398,7 +398,7 @@ img { max-width: 100%; display: block; }
    (min(1500px, 94vw)) less the page padding and the 34rem text column,
    and each mount costs its width plus 18px of chrome and gutter. */
 @media (min-width: 1040px) {
-  .diary-page.can-alongside:not([data-layout="below"]) .diary-entries {
+  .can-alongside:not([data-layout="below"]) .layout-text {
     float: left;
     width: min(34rem, 50%);
     margin-right: 2rem;
@@ -408,31 +408,31 @@ img { max-width: 100%; display: block; }
      unaffected; the short last row - and the rows below the diary, which
      rarely fill the width - sit centred rather than hard against the left
      edge while the column above them sits right. */
-  .diary-page.can-alongside:not([data-layout="below"]) .diary-photos {
+  .can-alongside:not([data-layout="below"]) .layout-photos {
     text-align: center;
   }
-  .diary-page.can-alongside:not([data-layout="below"]) .slide-flow {
+  .can-alongside:not([data-layout="below"]) .layout-photos .slide-flow {
     display: block;
     margin-bottom: 0;
   }
-  .diary-page.can-alongside:not([data-layout="below"]) .slide-flow .slide {
+  .can-alongside:not([data-layout="below"]) .layout-photos .slide {
     display: inline-block;
     vertical-align: top;
     width: var(--slide-alongside);
     margin: 0 1.1rem 1.1rem 0;
     text-align: left;   /* captions stay ranged left inside the mount */
   }
-  .diary-page.can-alongside:not([data-layout="below"]) .diary-pager { clear: both; }
-  .diary-page.can-alongside:not([data-layout="below"]) .diary-photos::after {
+  .can-alongside:not([data-layout="below"]) .diary-pager { clear: both; }
+  .can-alongside:not([data-layout="below"]) .layout-photos::after {
     content: "";
     display: block;
     clear: both;
   }
 }
-@media (min-width: 1040px) { .diary-page { --slide-alongside: 240px; } }
-@media (min-width: 1100px) { .diary-page { --slide-alongside: 300px; } }
-@media (min-width: 1330px) { .diary-page { --slide-alongside: 240px; } }
-@media (min-width: 1460px) { .diary-page { --slide-alongside: 300px; } }
+@media (min-width: 1040px) { .can-alongside { --slide-alongside: 240px; } }
+@media (min-width: 1100px) { .can-alongside { --slide-alongside: 300px; } }
+@media (min-width: 1330px) { .can-alongside { --slide-alongside: 240px; } }
+@media (min-width: 1460px) { .can-alongside { --slide-alongside: 300px; } }
 .entry { display: flex; gap: 0.9rem; align-items: baseline; }
 .entry-speaker {
   flex: 0 0 auto;
@@ -461,6 +461,23 @@ img { max-width: 100%; display: block; }
 /* On a wide screen the slide moves out into the margin beside the diary,
    where the text was never going to reach - so it reads early, next to
    the entry it belongs with, and the prose keeps its measure. */
+/* A stop with one or two slides has no column to fill either, so they go
+   out into the margin beside its diary, as a sparse diary day's do. */
+@media (min-width: 1040px) {
+  .stop-page .slides-inline-sparse {
+    float: right;
+    width: 300px;
+    /* No negative margin here: unlike the diary's entries, the stop's
+       sections are full width already, so the float sits at the card's
+       right edge on its own. */
+    margin: 0 0 1rem 2rem;
+  }
+  .stop-page .slides-inline-sparse .section-heading { display: none; }
+  .stop-page .slides-inline-sparse .slide-grid { display: block; }
+  .stop-page .slides-inline-sparse .slide { width: 300px; margin-bottom: 1.1rem; }
+  .stop-page .stop-diary::after { content: ""; display: block; clear: both; }
+}
+
 @media (min-width: 1040px) {
   .diary-entries { position: relative; overflow: visible; }
   .slides-inline {

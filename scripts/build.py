@@ -608,6 +608,7 @@ def main():
             DOCS / "stops" / f"{stop['slug']}.html",
             root="../",
             stop=stop,
+            photos=photos_by_stop.get(stop["slug"], []),
             photo_groups=group_photos_by_landmark(photos_by_stop.get(stop["slug"], []), stop),
             days=stop_days,
             prev_stop=stops[i - 1] if i > 0 else None,
