@@ -2,12 +2,18 @@
 {% import "_macros.html" as m %}
 {% block title %}{{ day.date }} — {{ day.place_label }} · The Trip{% endblock %}
 {% block content %}
-<article class="diary-page">
+<article class="diary-page" data-diary-layout>
   <header class="diary-page-head">
     <p class="diary-page-date">{{ day.weekday }} {{ day.date }}</p>
     <h1 class="diary-page-place">{{ day.place_label }}
       {% if stop %}<a class="diary-page-stop-link" href="{{ root }}stops/{{ stop.slug }}.html">see {{ stop.name }} →</a>{% endif %}
     </h1>
+    {% if photos %}
+    <div class="layout-toggle" hidden data-layout-toggle>
+      <button type="button" data-layout-value="below" aria-pressed="true">Slides below</button>
+      <button type="button" data-layout-value="alongside" aria-pressed="false">Slides alongside</button>
+    </div>
+    {% endif %}
   </header>
 
   <div class="diary-entries">
@@ -20,7 +26,7 @@
   {% if photos %}
   <section class="diary-photos">
     <h2 class="section-heading section-heading--small">Slides from this day</h2>
-    <div class="slide-grid">
+    <div class="slide-grid slide-flow">
       {% for photo in photos %}{{ m.slide_mount(photo, root) }}{% endfor %}
     </div>
   </section>
@@ -32,4 +38,8 @@
     {% if next_day %}<a class="pager-next" href="{{ root }}diary/{{ next_day }}.html">{{ next_day }} &rarr;</a>{% else %}<span></span>{% endif %}
   </nav>
 </article>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ root }}{{ asset('js/diary-layout.js') }}"></script>
 {% endblock %}

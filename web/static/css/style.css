@@ -237,6 +237,12 @@ img { max-width: 100%; display: block; }
   font-weight: 600;
   margin: 0 0 1rem;
 }
+/* The page cards are paper-coloured, so a paper-coloured heading vanishes
+   into them. Only the index sits on the dark ground the default is for. */
+.diary-page .section-heading,
+.stop-page .section-heading,
+.tag-page .section-heading,
+.index-page .section-heading { color: var(--ink-on-paper); }
 .section-heading--small { font-size: 1.05rem; }
 
 .strip-scroll-wrap {
@@ -329,6 +335,68 @@ img { max-width: 100%; display: block; }
 .stop-page-links { display: flex; gap: 1.25rem; margin-bottom: 1.5rem; }
 
 .diary-entries { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
+
+/* ---------------- Diary layout toggle ---------------- */
+/* Below 900px the alongside mode has no effect, so the control would be
+   dead - hide it rather than offer a choice that does nothing. */
+@media (max-width: 899px) {
+  .layout-toggle { display: none !important; }
+}
+.layout-toggle {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.9rem;
+}
+.layout-toggle button {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  background: none;
+  border: 1px solid var(--paper-dim);
+  border-radius: 2px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+.layout-toggle button:hover { color: var(--kodachrome); border-color: var(--kodachrome); }
+.layout-toggle button[aria-pressed="true"] {
+  color: var(--paper);
+  background: var(--kodachrome);
+  border-color: var(--kodachrome);
+}
+.layout-toggle button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* "Slides alongside": the text floats left and the slides run in normal
+   flow, so they fill the column beside it and then carry on full width
+   once the text ends - no need to guess how many fit. Only inline-level
+   content wraps around a float, which is why the grid becomes a plain
+   block of inline-blocks here. Narrow screens keep the stacked layout. */
+@media (min-width: 900px) {
+  .diary-page[data-layout="alongside"] .diary-entries {
+    float: left;
+    width: 54%;
+    margin-right: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .diary-page[data-layout="alongside"] .diary-photos { overflow: visible; }
+  .diary-page[data-layout="alongside"] .slide-flow {
+    display: block;
+    margin-bottom: 0;
+  }
+  .diary-page[data-layout="alongside"] .slide-flow .slide {
+    display: inline-block;
+    vertical-align: top;
+    width: 150px;
+    margin: 0 1.1rem 1.1rem 0;
+  }
+  .diary-page[data-layout="alongside"] .diary-pager { clear: both; }
+  .diary-page[data-layout="alongside"] .diary-photos::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
 .entry { display: flex; gap: 0.9rem; align-items: baseline; }
 .entry-speaker {
   flex: 0 0 auto;
