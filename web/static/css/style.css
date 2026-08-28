@@ -335,6 +335,17 @@ img { max-width: 100%; display: block; }
 .stop-page-links { display: flex; gap: 1.25rem; margin-bottom: 1.5rem; }
 
 .diary-entries { display: block; margin-bottom: 2rem; max-width: 68ch; }
+
+/* Running text keeps a measure whatever the shell does. Widening the shell
+   to 1500px was for the slides' benefit; without these the stop pages ran
+   to 160 characters a line, and the tag pages to 188. Grids, photo rows
+   and the map are deliberately not capped - they want the width. */
+.stop-narrative,
+.stop-diary .entry,
+.tag-page > p,
+.index-page > p,
+.diary-page > p { max-width: 68ch; }
+.stop-page-head p, .tag-page-head p, .index-page-head p { max-width: 68ch; }
 .diary-entries > .entry { margin-bottom: 1.1rem; }
 
 /* ---------------- Diary layout toggle ---------------- */
@@ -538,13 +549,24 @@ img { max-width: 100%; display: block; }
 }
 
 /* ---------------- Slide mounts ---------------- */
+/* Flex rather than grid, because grid cannot centre a short last row: its
+   track count is fixed for the whole grid, so justify-content centres the
+   tracks and leaves a lone item sitting in the first of them. A wrapping
+   flex row centres whatever is actually on each line, which is what the
+   diary does with its inline-blocks. */
 .slide-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.1rem;
   margin-bottom: 1rem;
 }
+.slide-grid > .slide { width: 300px; }
 .slide {
+  /* figure carries a 40px side margin by default, which was quietly
+     shrinking every mount and inflating the gaps between them. Spacing
+     comes from the container's gap, not from the figure. */
+  margin: 0;
   background: #d8cdb4;
   border: 1px solid #b9ab8a;
   border-radius: 2px;

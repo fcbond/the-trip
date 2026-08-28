@@ -16,6 +16,8 @@ Photographs are © 1976 Monique Bond, released under
 **Other documents in this repo**
 
 - `TODO.md` — outstanding work, and what blocks publication.
+- `DESIGN.md` — why the site looks and behaves as it does, including what
+  was tried and rejected.
 - `METADATA.md` — the EXIF/IPTC/XMP written into every distributed photo.
 - `INITIAL.md` — how the archive was first built. Historical; nothing in it
   needs running again.
