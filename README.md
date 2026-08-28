@@ -460,11 +460,21 @@ uv run python scripts/deploy.py --dry-run              # see what would change
 uv run python scripts/deploy.py -m "fix a caption"     # sync, commit, push
 ```
 
-`deploy.py` refuses to run if `docs/` is older than anything in `metadata/`
-or `web/`, so a forgotten rebuild cannot publish the previous version, and
-it aborts if any archive-only path (`data/`, `INITIAL.md`, the one-time
-scripts) has appeared on the public side. `--public` or `$TRIP_PUBLIC`
-points it at the checkout; `--no-push` stops after committing.
+`deploy.py` refuses to run when:
+
+- **anything it would deploy is uncommitted here** - it publishes the
+  working tree, not a commit, so an uncommitted change would go live with
+  nothing in the archive to explain it (`--allow-dirty` overrides);
+- **`docs/` is older than `metadata/` or `web/`**, so a forgotten rebuild
+  cannot publish the previous version (`--force` overrides);
+- **an archive-only path** (`data/`, `INITIAL.md`, the one-time scripts)
+  has appeared on the public side.
+
+It also warns about unpushed archive commits, and records which one each
+deploy came from in the public commit message
+(`Deployed from the-trip-archive@<sha>`), so any published state can be
+traced back. `--public` or `$TRIP_PUBLIC` points it at the checkout;
+`--no-push` stops after committing.
 
 ### Doing the split
 
